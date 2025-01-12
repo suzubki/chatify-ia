@@ -1,15 +1,9 @@
-import Image, { type ImageProps } from "next/image";
-import styles from "./page.module.css";
-
-type Props = Omit<ImageProps, "src"> & {
-  srcLight: string;
-  srcDark: string;
-};
+import { AppSidebar } from "@/components/modules/app-sidebar";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      
-    </div>
-  );
+	return (
+		<div className="">
+			<AppSidebar />
+		</div>
+	);
 }
