@@ -111,9 +111,7 @@ export function AppSidebar() {
 				<div className="flex items-center gap-3 p-3 rounded hover:bg-white/5 cursor-pointer group transition-colors">
 					<div className="size-10 rounded-xl bg-gradient-to-br from-purple-400 to-pink-500" />
 					<div className="flex-1 min-w-0">
-						<div className="truncate text-white text-sm">
-							guilleetoledo-gmail...
-						</div>
+						<div className="truncate text-white ">guilleetoledo-gmail...</div>
 						<div className="text-white/40 text-sm">Free</div>
 					</div>
 					<svg
