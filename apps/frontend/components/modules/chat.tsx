@@ -4,16 +4,26 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-	Mic,
-	ImageIcon,
+	Code2Icon,
+	FileTextIcon,
 	Globe,
+	ImageIcon,
 	LightbulbIcon,
-	Search,
+	Mic,
 	Pencil,
-	MoreHorizontal,
+	Search,
 } from "lucide-react";
+import { useState } from "react";
 
 export default function Chat() {
+	const [message, setMessage] = useState("");
+
+	const onDetectKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === "Enter") {
+			console.log({ message });
+		}
+	};
+
 	return (
 		<div className="min-h-screen bg-[#1E1F20] flex flex-col items-center justify-center p-4">
 			<div className="w-full max-w-3xl space-y-8">
@@ -28,6 +38,8 @@ export default function Chat() {
 						<Input
 							placeholder="Envía un mensaje a ChatGPT"
 							className="bg-transparent border-0 text-white h-14 pl-4 pr-12"
+							onChange={(e) => setMessage(e.target.value)}
+							onKeyDown={onDetectKey}
 						/>
 						<div className="absolute right-0 top-0 h-full flex items-center gap-2 pr-4">
 							<Button
@@ -56,47 +68,55 @@ export default function Chat() {
 				</Card>
 
 				{/* Action buttons */}
-				<div className="flex flex-wrap justify-center gap-2">
+				<div className="flex flex-wrap justify-center gap-4">
 					<Button
 						variant="outline"
-						className="bg-transparent text-gray-300 border-gray-600 hover:bg-gray-800"
+						className="bg-transparent text-muted-foreground border-gray-600 hover:bg-gray-800"
 					>
-						<ImageIcon className="mr-2 h-4 w-4" />
+						<ImageIcon className="h-4 w-4 text-white" />
 						Crea una imagen
 					</Button>
 					<Button
 						variant="outline"
-						className="bg-transparent text-gray-300 border-gray-600 hover:bg-gray-800"
+						className="bg-transparent text-muted-foreground border-gray-600 hover:bg-gray-800"
 					>
-						<LightbulbIcon className="mr-2 h-4 w-4" />
+						<LightbulbIcon className="h-4 w-4 text-white" />
 						Propone ideas
 					</Button>
 					<Button
 						variant="outline"
-						className="bg-transparent text-gray-300 border-gray-600 hover:bg-gray-800"
+						className="bg-transparent text-muted-foreground border-gray-600 hover:bg-gray-800"
 					>
-						<Search className="mr-2 h-4 w-4" />
+						<Search className="h-4 w-4 text-white" />
 						Analiza imágenes
 					</Button>
 					<Button
 						variant="outline"
-						className="bg-transparent text-gray-300 border-gray-600 hover:bg-gray-800"
+						className="bg-transparent text-muted-foreground border-gray-600 hover:bg-gray-800"
 					>
-						<Pencil className="mr-2 h-4 w-4" />
+						<Pencil className="h-4 w-4 text-white" />
 						Ayúdame a escribir
 					</Button>
 					<Button
 						variant="outline"
-						className="bg-transparent text-gray-300 border-gray-600 hover:bg-gray-800"
+						className="bg-transparent text-muted-foreground border-gray-600 hover:bg-gray-800"
 					>
-						<MoreHorizontal className="mr-2 h-4 w-4" />
-						Más
+						<Code2Icon className="h-4 w-4 text-white" />
+						Genera código
+					</Button>
+					<Button
+						variant="outline"
+						className="bg-transparent text-muted-foreground border-gray-600 hover:bg-gray-800"
+					>
+						<FileTextIcon className="h-4 w-4 text-white" />
+						Resumen un texto
 					</Button>
 				</div>
 
 				{/* Footer text */}
 				<p className="text-center text-sm text-gray-500">
-					ChatGPT puede cometer errores. Comprueba la información importante.
+					Cada una de las IA puede cometer errores. Comprueba la información
+					importante.
 				</p>
 			</div>
 		</div>
