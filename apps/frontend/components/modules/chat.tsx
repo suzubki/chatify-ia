@@ -2,23 +2,29 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
 	Code2Icon,
 	FileTextIcon,
-	Globe,
 	ImageIcon,
 	LightbulbIcon,
-	Mic,
 	Pencil,
 	Search,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Textarea } from "../ui/textarea";
 
 export default function Chat() {
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const [message, setMessage] = useState("");
 
-	const onDetectKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+	const onInputChange = (e: React.ChangeEvent<HTMLDivElement>) => {
+		const parsedValue = e.currentTarget.textContent || "";
+
+		setMessage(parsedValue);
+		if (textareaRef.current) textareaRef.current.value = parsedValue;
+	};
+
+	const onDetectKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
 		if (e.key === "Enter") {
 			console.log({ message });
 		}
@@ -33,37 +39,26 @@ export default function Chat() {
 				</h1>
 
 				{/* Input area */}
-				<Card className="bg-[#2A2B32] border-0">
-					<div className="relative">
-						<Input
+				<Card className="bg-[#2A2B32] relative border-0">
+					<div className="relative overflow-hidden">
+						<Textarea
+							ref={textareaRef}
 							placeholder="Envía un mensaje a ChatGPT"
-							className="bg-transparent border-0 text-white h-14 pl-4 pr-12"
-							onChange={(e) => setMessage(e.target.value)}
+							className="hidden bg-transparent border-0 text-white h-14 pl-4 pr-16 w-full resize-none"
+							rows={3}
+							aria-hidden={false}
+						/>
+						<div
+							className="bg-transparent rounded-xl min-h-[40px] border-0 text-white p-4 pr-16 ring-none outline-none"
+							contentEditable
+							onInput={onInputChange}
 							onKeyDown={onDetectKey}
 						/>
-						<div className="absolute right-0 top-0 h-full flex items-center gap-2 pr-4">
-							<Button
-								variant="ghost"
-								size="icon"
-								className="text-gray-400 hover:text-white"
-							>
-								<Mic className="h-5 w-5" />
-							</Button>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="text-gray-400 hover:text-white"
-							>
-								<ImageIcon className="h-5 w-5" />
-							</Button>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="text-gray-400 hover:text-white"
-							>
-								<Globe className="h-5 w-5" />
-							</Button>
-						</div>
+						{message === "" && (
+							<span className="block absolute left-4 top-4 text-gray-400">
+								Envia un mensaje a Chatify IA...
+							</span>
+						)}
 					</div>
 				</Card>
 
