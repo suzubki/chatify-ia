@@ -1,5 +1,10 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"vcs": {
+		"clientKind": "git",
+		"enabled": true,
+		"useIgnoreFile": true
+	},
 	"organizeImports": {
 		"enabled": true
 	},
@@ -19,17 +24,10 @@
 			},
 			"a11y": {
 				"noSvgWithoutTitle": "off"
+			},
+			"style": {
+				"useImportType": "error"
 			}
 		}
-	},
-	"formatter": {
-		"enabled": true,
-		"ignore": [
-			"node_modules/*",
-			"*.config.*",
-			"*.json",
-			"tsconfig.json",
-			".turbo"
-		]
 	}
 }

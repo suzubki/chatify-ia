@@ -9,11 +9,11 @@ import {
 	SidebarFooter,
 	SidebarHeader,
 } from "@/components/ui/sidebar";
+import { generateId } from "@/lib/unique";
 import type { Prompt } from "@chatify/types";
 import { useState } from "react";
-import { Stack } from "../ui/stack";
-import { generateId } from "@/lib/unique";
 import { Split } from "../ui/split";
+import { Stack } from "../ui/stack";
 
 export function AppSidebar() {
 	const [prompts, setPrompts] = useState<Prompt[]>([]);
