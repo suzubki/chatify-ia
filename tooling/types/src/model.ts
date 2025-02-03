@@ -1,20 +1,23 @@
-interface Creatable {
+// ---------------- Utility interfaces & types ----------------
+export interface Creatable {
 	createdAt: Date;
 	createdBy: UserId;
 }
 
-interface Updeatable {
+export interface Updeatable {
 	updatedAt: Date;
 	updatedBy: UserId;
 }
 
-interface Deletable {
+export interface Deletable {
 	deleted: boolean;
 
 	deletedAt: Date | null;
 	deletedBy: UserId | null;
 }
 
+
+// ---------------- Entites interfaces & types ----------------
 export interface Prompt extends Creatable, Updeatable, Deletable {
 	id: string;
 	message: string;
@@ -26,6 +29,7 @@ export interface User extends Creatable, Updeatable, Deletable {
 	name: string;
 	email: string;
 	phone: string;
+	password: string;
 
 	// One-to-many relationship
 	prompts: Prompt[];
