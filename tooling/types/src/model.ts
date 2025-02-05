@@ -1,3 +1,8 @@
+export type Only<TEntity extends { $relations: any }> = Omit<
+	TEntity,
+	"$relations"
+>;
+
 export type Entities = "user" | "chat" | "prompt";
 
 // ---------------- Utility interfaces & types ----------------
@@ -28,13 +33,16 @@ export interface User
 	email: string;
 
 	// Relations one to many
-	chats: Chat[];
-	prompts: Prompt[];
+	$relations: {
+		chats: Chat[];
+		prompts: Prompt[];
+	};
 }
 
 export interface ResetablePassword {
 	_passwordHash: string;
 	_passwordReset: {
+		_prevPasswordHash: string;
 		code: string;
 		requestedAt: Date;
 		expiresAt: Date;
@@ -51,7 +59,10 @@ export interface Chat extends Creatable, Updeatable, Deletable {
 	title: string;
 
 	// Relations one to many
-	prompts: Prompt[];
+	$relations: {
+		user: User;
+		prompts: Prompt[];
+	};
 }
 
 /**
@@ -67,6 +78,11 @@ export interface Prompt extends Creatable, Updeatable, Deletable {
 	chatId: ChatId;
 
 	metadata: Record<string, any>;
+
+	$relations: {
+		user: User;
+		chat: Chat;
+	};
 }
 
 export type UserId = User["id"];
