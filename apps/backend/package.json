@@ -1,11 +1,12 @@
 {
-	"name": "backend",
+	"name": "@chatify/backend",
 	"version": "0.0.1",
 	"description": "",
 	"author": "",
 	"private": true,
 	"license": "UNLICENSED",
 	"scripts": {
+		"dev": "nest start --debug --watch",
 		"build": "nest build",
 		"start": "nest start",
 		"start:dev": "nest start --watch",
