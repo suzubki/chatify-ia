@@ -20,8 +20,6 @@ class UserRepository {
 			.from(users)
 			.where(eq(users.email, email));
 
-		const firstResult = result[0];
-
 		return result[0];
 	}
 }
