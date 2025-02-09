@@ -28,6 +28,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 				statusCode: status,
 				path: request.url,
 				stackTrace: exception.stack,
+				cause: exception.cause,
 			});
 		} else {
 			response.status(status).json({

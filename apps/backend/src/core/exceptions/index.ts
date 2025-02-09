@@ -8,3 +8,12 @@ export class UserNotFound extends HttpException {
 		});
 	}
 }
+
+export class InvalidCredentials extends HttpException {
+	constructor() {
+		super("Invalid credentials", 403, {
+			cause: "InvalidCredentials",
+			description: "The email given or password provided is not valid",
+		});
+	}
+}
