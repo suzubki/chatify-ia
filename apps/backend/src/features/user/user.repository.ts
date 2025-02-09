@@ -1,6 +1,7 @@
 import type * as t from "@chatify/types";
 import { Inject, Injectable } from "@nestjs/common";
 import { DatabaseInjector, dbConfig } from "src/database";
+import { users } from "src/database/schema";
 
 @Injectable()
 export class UserRepository {
@@ -26,5 +27,11 @@ export class UserRepository {
 		}
 
 		return row;
+	}
+
+	async createOne({ user }: { user: t.Only<t.User> }): Promise<t.Only<t.User>> {
+		const result = await this.db.insert(users).values([user]).returning();
+
+		return result[0];
 	}
 }

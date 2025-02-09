@@ -11,4 +11,10 @@ export class UserService {
 
 		return user;
 	}
+
+	async createOne(user: t.Only<t.User>) {
+		const newUser = await this.userRepository.createOne({ user });
+
+		return newUser;
+	}
 }
