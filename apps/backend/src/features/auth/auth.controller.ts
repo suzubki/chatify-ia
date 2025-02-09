@@ -1,21 +1,26 @@
 import type { CreateUserDto } from "@chatify/types";
-import { Body, Post } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
+import { AuthService } from "./auth.service";
 
-class AuthService {}
-
+@Controller("auth")
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  register(@Body() createUserDto: CreateUserDto) {}
+	@Post("/register")
+	register(@Body() createUserDto: CreateUserDto) {
+		return "ola";
+	}
 
-  @Post()
-  login(@Body() createUserDto: CreateUserDto) {
-    
-  }
+	@Post("/login")
+	login(@Body() createUserDto: CreateUserDto) {
+		const user = this.authService.validateUser(
+			createUserDto.email,
+			createUserDto.password,
+		);
 
-  @Post()
-  verifySession(@Body() session: any) {
-    
-  }
+		return user;
+	}
+
+	@Post()
+	verifySession(@Body() session: any) {}
 }

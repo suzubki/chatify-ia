@@ -1,51 +1,24 @@
-import type * as t from "@chatify/types";
-import { eq } from "drizzle-orm";
-import type { DatabaseConnection } from "src/database";
-import { users } from "src/database/schema";
+import { UserService } from "@/user/user.service";
+import {
+	ForbiddenException,
+	Injectable,
+	NotFoundException,
+} from "@nestjs/common";
+import { UserNotFound } from "src/core/exceptions";
 
-class UserRepository {
-	constructor(private db: DatabaseConnection) {}
-
-	async findAll(): Promise<t.Only<t.User>[]> {
-		const result = await this.db.select().from(users);
-
-		return result;
-	}
-
-	async findOneByEmail({
-		email,
-	}: { email: string }): Promise<t.Only<t.User> | null> {
-		const result = await this.db
-			.select()
-			.from(users)
-			.where(eq(users.email, email));
-
-		return result[0];
-	}
-}
-
-class UsersService {
-	constructor(private userRepository: UserRepository) {}
-
-	async findOneByEmail(email: string): Promise<t.Only<t.User> | null> {
-		await this.userRepository.findOneByEmail({ email });
-
-		return null;
-	}
-}
-
+@Injectable()
 export class AuthService {
-	constructor(private usersService: UsersService) {}
+	constructor(private readonly userService: UserService) {}
 
-	async validateUser(email: string, password: string): Promise<any> {
-		const user = await this.usersService.findOneByEmail(email);
+	async validateUser(email: string, password: string) {
+		const user = await this.userService.findOneByEmail(email);
+		if (!user) throw new UserNotFound();
 
-		if (user && user._passwordHash === password) {
-			const { _passwordHash, _passwordReset, ...rest } = user;
+		if (user._passwordHash !== password)
+			throw new ForbiddenException("Invalid password");
 
-			return rest;
-		}
+		const { _passwordHash, _passwordReset, ...rest } = user;
 
-		return null;
+		return rest;
 	}
 }
