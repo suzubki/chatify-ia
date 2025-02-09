@@ -28,7 +28,7 @@ export interface User
 		Updeatable,
 		Deletable,
 		ResetablePassword {
-	id: string;
+	id: UserId;
 	name: string;
 	email: string;
 

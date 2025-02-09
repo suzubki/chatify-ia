@@ -1,6 +1,7 @@
+import { Id } from "@chatify/types";
 import { relations } from "drizzle-orm";
 import * as t from "drizzle-orm/pg-core";
-import { type Id, id } from "./base";
+import { id } from "./base";
 
 export const users = t.pgTable(
 	"users",
