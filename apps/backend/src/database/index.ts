@@ -1,18 +1,40 @@
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import { coreConfig } from "src/core/config/config";
 import * as schema from "./schema";
 
-const databaseUrl = process.env.DATABASE_URL;
+export const CONNECTION_TAGS = {
+	DEV: "DATABASE_DEV",
+	TEST: "DATABASE_TEST",
+	PROD: "DATABASE_PROD",
+} as const;
 
-export const makeDatabase = () => {
-	const queryClient = postgres(databaseUrl);
-
-	const db = drizzle(queryClient, { schema, logger: true });
-
-	return db;
+const constants = {
+	connectionTags: {
+		development: CONNECTION_TAGS.DEV,
+		testing: CONNECTION_TAGS.TEST,
+		production: CONNECTION_TAGS.PROD,
+	},
+	databaseUrl: coreConfig.database.url,
 };
 
-export const mainDB = makeDatabase();
+// development, testing, production
+export const generateConfigBasedOnEnv = (env: string) => {
+	const connectionTag =
+		constants.connectionTags[env as keyof typeof constants.connectionTags];
 
-export type DatabaseConnection = ReturnType<typeof makeDatabase>;
+	if (!constants.databaseUrl) {
+		throw new Error("DATABASE_URL is not set");
+	}
+
+	return {
+		connectionTag,
+		databaseUrl: constants.databaseUrl,
+	};
+};
+
+export const dbConfig = generateConfigBasedOnEnv(
+	coreConfig.env ?? "development",
+);
+
+export type DatabaseInjector = PostgresJsDatabase<typeof schema>;

@@ -46,7 +46,7 @@ export interface ResetablePassword {
 		code: string;
 		requestedAt: Date;
 		expiresAt: Date;
-	};
+	} | null;
 }
 
 /**
@@ -85,7 +85,9 @@ export interface Prompt extends Creatable, Updeatable, Deletable {
 	};
 }
 
-export type UserId = User["id"];
+export type Id<T extends Entities> = `${T}_${string}`;
+
+export type UserId = Id<"user">;
 export type ChatId = Chat["id"];
 
 export type AiAgent = "gpt4" | "claude";

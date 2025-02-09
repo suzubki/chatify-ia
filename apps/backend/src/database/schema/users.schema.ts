@@ -1,6 +1,6 @@
+import { relations } from "drizzle-orm";
 import * as t from "drizzle-orm/pg-core";
 import { type Id, id } from "./base";
-import { relations } from "drizzle-orm";
 
 export const users = t.pgTable(
 	"users",
@@ -18,9 +18,9 @@ export const users = t.pgTable(
 
 		// timestamps
 		createdAt: t.timestamp().notNull().defaultNow(),
-		createdBy: t.text().$type<Id<"user">>(),
+		createdBy: t.text().notNull().$type<Id<"user">>(),
 		updatedAt: t.timestamp().notNull().defaultNow(),
-		updatedBy: t.text().$type<Id<"user">>(),
+		updatedBy: t.text().notNull().$type<Id<"user">>(),
 
 		deleted: t.boolean().notNull().default(false),
 		deletedAt: t.timestamp(),
@@ -41,7 +41,7 @@ export const chats = t.pgTable("chat", {
 	title: t.text().notNull().default(""), // default empty string or generated from the first prompt
 
 	// relations
-	userId: t.text("user_id").notNull().$type<Id<"user">>(),
+	userId: t.text().notNull().$type<Id<"user">>(),
 
 	// timestamps
 	createdAt: t.timestamp().notNull().defaultNow(),
@@ -71,8 +71,8 @@ export const prompts = t.pgTable("prompts", {
 	aiAgent: t.text().notNull().default("gpt4"), // default gpt4, should pass an enum here
 
 	// relations
-	userId: t.text("user_id").notNull().$type<Id<"user">>(),
-	chatId: t.text("chat_id").notNull().$type<Id<"chat">>(),
+	userId: t.text().notNull().$type<Id<"user">>(),
+	chatId: t.text().notNull().$type<Id<"chat">>(),
 
 	// extra metadata
 	metadata: t.jsonb(),
