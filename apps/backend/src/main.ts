@@ -1,5 +1,6 @@
 import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import * as cookieParser from "cookie-parser";
 import { AppModule } from "./app.module";
 import { coreConfig } from "./core/config/config";
 import { HttpExceptionFilter } from "./core/filters/http-exception.filter";
@@ -9,6 +10,8 @@ const port = coreConfig.port ?? 4000;
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
+
+	app.use(cookieParser());
 	app.useLogger(new CustomLogger());
 	app.useGlobalFilters(new HttpExceptionFilter());
 
