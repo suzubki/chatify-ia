@@ -1,7 +1,12 @@
 import type { CreateUserDto } from "@/user/dtos/user.dto";
-import { Body, Controller, Post, UsePipes } from "@nestjs/common";
+import { Body, Controller, Post, Req, Res, UsePipes } from "@nestjs/common";
+import type { Request, Response } from "express";
+import { coreConfig } from "src/core/config/config";
+import { COOKIES } from "src/core/config/constants";
 import { SchemaValidationPipe } from "src/core/pipes/schema-validation.pipe";
+import { session } from "src/lib/auth/session";
 import {
+	type LoginUserSchema,
 	createUserSchema,
 	loginUserSchema,
 } from "src/shared/user-validation.schema";
@@ -25,12 +30,52 @@ export class AuthController {
 
 	@Post("/login")
 	@UsePipes(new SchemaValidationPipe(loginUserSchema))
-	async login(@Body() email: string, password: string) {
-		const user = await this.authService.login(email, password);
+	async webLoginWithCredentials(
+		@Body() data: LoginUserSchema,
+		@Res({ passthrough: true }) res: Response,
+	) {
+		const { user, accessToken, refreshToken } =
+			await this.authService.webLoginWithCredentials(data.email, data.password);
 
-		return user;
+		session.setResponseCookie(res, {
+			name: COOKIES.ACCESS_TOKEN,
+			token: accessToken,
+			duration: coreConfig.tokens.duration.accessToken.miliSeconds,
+		});
+
+		session.setResponseCookie(res, {
+			name: COOKIES.REFRESH_TOKEN,
+			token: refreshToken,
+			duration: coreConfig.tokens.duration.refreshToken.miliSeconds,
+		});
+
+		return { user };
 	}
 
-	@Post()
-	async verifySession(@Body() session: any) {}
+	@Post("/validate-session")
+	async validateSession(@Req() req: Request, @Res() res: Response) {
+		const { refreshed, accessToken } = await this.authService.validateSession(
+			req.cookies.access_token,
+			req.cookies.refresh_token,
+			() => {
+				this.destroySession(res);
+			},
+		);
+
+		if (refreshed) {
+			session.setResponseCookie(res, {
+				name: COOKIES.ACCESS_TOKEN,
+				token: accessToken,
+				duration: coreConfig.tokens.duration.accessToken.miliSeconds,
+			});
+		}
+
+		return res.status(200).send();
+	}
+
+	// Destroy the session by clearing the cookies
+	async destroySession(@Res() res: Response) {
+		session.clearResponseCookie(res, COOKIES.ACCESS_TOKEN);
+		session.clearResponseCookie(res, COOKIES.REFRESH_TOKEN);
+	}
 }

@@ -1,5 +1,6 @@
 import type * as t from "@chatify/types";
 import { Inject, Injectable } from "@nestjs/common";
+import { eq } from "drizzle-orm";
 import { DatabaseInjector, dbConfig } from "src/database";
 import { users } from "src/database/schema";
 
@@ -13,6 +14,18 @@ export class UserRepository {
 		});
 
 		return result;
+	}
+
+	async findOneById({ id }: { id: t.UserId }): Promise<t.Only<t.User> | null> {
+		const row = await this.db.query.users.findFirst({
+			where: eq(users.id, id),
+		});
+
+		if (!row) {
+			return null;
+		}
+
+		return row;
 	}
 
 	async findOneByEmail({

@@ -13,3 +13,6 @@ export const loginUserSchema = z.object({
 	email: emailSchema,
 	password: passwordSchema,
 });
+
+export type LoginUserSchema = z.infer<typeof loginUserSchema>;
+export type CreateUserSchema = z.infer<typeof createUserSchema>;
