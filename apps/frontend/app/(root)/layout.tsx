@@ -1,6 +1,6 @@
+import { AppSidebar } from "@/components/modules/app-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
-import { calibreFont } from "./fonts";
-import "./globals.css";
 
 export const metadata: Metadata = {
 	title: "Create Next App",
@@ -13,10 +13,11 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body className={`${calibreFont.className} bg-background dark`}>
-				{children}
-			</body>
-		</html>
+		<>
+			<SidebarProvider>
+				<AppSidebar />
+				<div className="flex-1 bg-background">{children}</div>
+			</SidebarProvider>
+		</>
 	);
 }

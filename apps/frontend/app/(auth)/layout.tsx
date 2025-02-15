@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { calibreFont } from "./fonts";
-import "./globals.css";
 
 export const metadata: Metadata = {
 	title: "Create Next App",
@@ -12,11 +10,5 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	return (
-		<html lang="en">
-			<body className={`${calibreFont.className} bg-background dark`}>
-				{children}
-			</body>
-		</html>
-	);
+	return children;
 }
