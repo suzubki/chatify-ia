@@ -11,9 +11,22 @@ const port = coreConfig.port ?? 4000;
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 
+	app.enableCors({
+		origin: coreConfig.env === "development" ? "*" : coreConfig.webUrl,
+		credentials: true,
+		methods: "GET,HEAD,PUT,PATCH,POST,DELETE, OPTIONS",
+		allowedHeaders: [
+			"Content-Type",
+			"Accept",
+			"Authorization",
+			"X-Requested-With",
+			"Origin",
+		],
+	});
 	app.use(cookieParser());
 	app.useLogger(new CustomLogger());
 	app.useGlobalFilters(new HttpExceptionFilter());
+	app.setGlobalPrefix("/api/v1");
 
 	await app.listen(port);
 
