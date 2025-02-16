@@ -1,3 +1,8 @@
+import {
+	type LoginUserSchema,
+	createUserSchema,
+	loginUserSchema,
+} from "@/shared/user-validation.schema";
 import type { CreateUserDto } from "@/user/dtos/user.dto";
 import { Body, Controller, Post, Req, Res, UsePipes } from "@nestjs/common";
 import type { Request, Response } from "express";
@@ -5,11 +10,6 @@ import { coreConfig } from "src/core/config/config";
 import { COOKIES } from "src/core/config/constants";
 import { SchemaValidationPipe } from "src/core/pipes/schema-validation.pipe";
 import { session } from "src/lib/auth/session";
-import {
-	type LoginUserSchema,
-	createUserSchema,
-	loginUserSchema,
-} from "src/shared/user-validation.schema";
 import { AuthService } from "./auth.service";
 
 @Controller("auth")
@@ -25,7 +25,7 @@ export class AuthController {
 			createUserDto.name,
 		);
 
-		return user;
+		return { ...user };
 	}
 
 	@Post("/login")
@@ -49,7 +49,7 @@ export class AuthController {
 			duration: coreConfig.tokens.duration.refreshToken.miliSeconds,
 		});
 
-		return { user };
+		return { ...user };
 	}
 
 	@Post("/validate-session")

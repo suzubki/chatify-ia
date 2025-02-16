@@ -16,6 +16,12 @@ export class AuthService {
 		return user;
 	}
 
+	/**
+	 * Validate the user using email and password.
+	 * @param email
+	 * @param password
+	 * @returns
+	 */
 	async validateUser(email: string, password: string) {
 		const user = await this.userService.findOneByEmail(email);
 		if (!user) throw new UserNotFound();
@@ -55,6 +61,14 @@ export class AuthService {
 		return user;
 	}
 
+	/**
+	 * Login the user using email and password (Credentials).
+	 * It validates the user and creates a web session.
+	 *
+	 * @param email
+	 * @param password
+	 * @returns
+	 */
 	async webLoginWithCredentials(email: string, password: string) {
 		const user = await this.validateUser(email, password);
 		const { accessToken, refreshToken } = await this.createWebSession(user);
@@ -62,6 +76,14 @@ export class AuthService {
 		return { user, accessToken, refreshToken };
 	}
 
+	/**
+	 * Create tokens for the user. But it doesn't validate the user.
+	 *
+	 * @param id
+	 * @param name
+	 * @param email
+	 * @returns
+	 */
 	async createWebSession({
 		id,
 		name,
@@ -73,6 +95,12 @@ export class AuthService {
 		return { accessToken, refreshToken };
 	}
 
+	/**
+	 * Validate the web session token, either access or refresh.
+	 *
+	 * @param token
+	 * @returns
+	 */
 	async validateWebSessionToken(token: string) {
 		const { data, success } = await auth.token.validateAndParse(token);
 		if (!data || !success) throw new InvalidCredentials();
@@ -80,6 +108,12 @@ export class AuthService {
 		return { success, data };
 	}
 
+	/**
+	 * Refresh the web session for the user.
+	 *
+	 * @param userId
+	 * @returns
+	 */
 	async refreshWebSession(userId: t.UserId) {
 		const user = await this.findUserById(userId);
 
@@ -89,6 +123,17 @@ export class AuthService {
 		return { accessToken, refreshToken: newRefreshToken };
 	}
 
+	/**
+	 * Try to validate the session using tokens from the request and refresh session if possible.
+	 * If the access token is invalid, it tries to refresh the session using the refresh token.
+	 * If the refresh token is invalid, it throws an UnauthorizedException.
+	 * If the access token is expired, it refreshes the session.
+	 *
+	 * @param accessToken
+	 * @param refreshToken
+	 * @param onError
+	 * @returns
+	 */
 	async validateSession(
 		accessToken: string,
 		refreshToken: string,
