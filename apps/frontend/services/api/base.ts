@@ -19,6 +19,7 @@ export const chatifyApi = axios.create({
 	headers: {
 		"Content-Type": "application/json",
 	},
+	withCredentials: true,
 });
 
 /**
@@ -45,7 +46,6 @@ export const genericRequest = async ({
 		method,
 		data: method !== "GET" ? data : undefined,
 		params: method === "GET" ? data : undefined,
-		withCredentials: type === "authenticated",
 	});
 };
 
