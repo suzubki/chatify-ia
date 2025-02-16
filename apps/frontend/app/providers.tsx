@@ -1,5 +1,6 @@
 'use client'
 
+import { AuthSessionGuard } from "@/components/guards/auth-session.guard";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
@@ -11,7 +12,9 @@ export default function Providers ({
 }>) {
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <AuthSessionGuard>
+        {children}
+      </AuthSessionGuard>
     </QueryClientProvider>
   );
 }

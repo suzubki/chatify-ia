@@ -8,28 +8,35 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Split } from "@/components/ui/split";
 import { Stack } from "@/components/ui/stack";
+import { sessionStore } from "@/lib/states/session.state";
 import { type LoginUserPayload, loginUserSchema } from "@/schemas/auth/auth.schema";
 import { useLoginMutation } from "@/services/api/auth.api";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { tryit } from "radash";
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 
 export default function LoginPage() {
-  const login = useLoginMutation();
+  const { login } = sessionStore();
+  const router = useRouter();
+  const loginMutation = useLoginMutation();
   const [submitErrorMsg, setSubmitErrorMsg] = useState<string | null>(null);
   const { register, handleSubmit, formState } = useForm<LoginUserPayload>({
     resolver: zodResolver(loginUserSchema)
   })
 
   const onSubmit: SubmitHandler<LoginUserPayload> = async (data) => {
-    const [error, response] = await tryit(login.mutateAsync)(data);
+    const [error, response] = await tryit(loginMutation.mutateAsync)(data);
     if (error) {
       setSubmitErrorMsg(error.message);
       return;
     }
 
+    setSubmitErrorMsg(null);
     const authenticatedUser = response.data
+    login(authenticatedUser);
+    router.push('/chat');
   };
 
   return (
@@ -75,7 +82,7 @@ export default function LoginPage() {
               </Split>
               <Button type="submit" size="lg">Sign in</Button>
               <div className="text-center text-sm mt-2">
-                New to Stripe? <a href="/" className="text-blue-600 hover:underline">Create account</a>
+                New to Chatify? <a href="/" className="text-blue-600 hover:underline">Create account</a>
               </div>
             </fieldset>
           </form>
