@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { calibreFont } from "./fonts";
+import { mainFont } from "./fonts";
 import "./globals.css";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
 	title: "Create Next App",
@@ -14,8 +15,10 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${calibreFont.className} bg-background dark`}>
-				{children}
+			<body className={`${mainFont.className} bg-background text-black tracking-tight`}>
+				<Providers>
+					{children}
+				</Providers>
 			</body>
 		</html>
 	);
