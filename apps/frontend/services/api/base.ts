@@ -34,18 +34,21 @@ export const genericRequest = async ({
 	api,
 	path,
 	data,
+	signal,
 }: {
 	type: "authenticated" | "no-authenticated";
 	api: AxiosInstance;
 	method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 	path: string;
 	data?: unknown;
+	signal?: AbortSignal;
 }) => {
 	return await api({
 		url: path,
 		method,
 		data: method !== "GET" ? data : undefined,
 		params: method === "GET" ? data : undefined,
+		signal,
 	});
 };
 
@@ -84,31 +87,37 @@ export const useChatifyQuery = (
 
 export const useChatifyMutation = <
 	TData extends Record<string, unknown>,
-	TResponse,
+	TAdaptor,
 >({
 	fetcher,
 	validator,
 }: {
-	fetcher: (payload: TData) => Promise<AxiosResponse<TResponse, any>>;
-	validator?: (responseData: unknown) => {
-		success: boolean;
-		error?: ZodError;
-		data?: TResponse;
-	};
+	fetcher: (payload: TData) => Promise<AxiosResponse<TAdaptor, any>>;
+	validator?: (responseData: unknown) =>
+		| {
+				success: true;
+				data: TAdaptor;
+		  }
+		| {
+				success: false;
+				error: ZodError;
+		  };
 }) => {
 	const mutation = useMutation({
 		mutationFn: async (data: TData) => await fetcher(data),
+		onSuccess: (data) => {
+			// Time to adapt the data from backend
+			if (validator) {
+				const adaptorValidation = validator(data.data);
+
+				if (!adaptorValidation.success) {
+					console.error(adaptorValidation.error);
+				} else {
+					data.data = adaptorValidation.data;
+				}
+			}
+		},
 	});
-
-	if (validator && mutation.data) {
-		const data = mutation.data.data;
-		const adaptorValidation = validator(data);
-
-		if (adaptorValidation.error) {
-			// TODO: Send this error to a logging service so we can track it
-			console.error(adaptorValidation.error);
-		}
-	}
 
 	return mutation;
 };

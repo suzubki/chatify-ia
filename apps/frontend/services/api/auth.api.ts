@@ -11,6 +11,16 @@ import {
 } from "./base";
 import { CACHE_KEYS } from "./cache";
 
+export const verifySession = async (abortController: AbortController) => {
+	return await genericRequest({
+		type: "no-authenticated",
+		api: chatifyApi,
+		method: "GET",
+		path: "/auth/validate-session",
+		signal: abortController.signal,
+	});
+};
+
 export const useLoginMutation = () => {
 	return useChatifyMutation<LoginUserPayload, AuthenticatedUserAdapter>({
 		fetcher: async (payload) =>
