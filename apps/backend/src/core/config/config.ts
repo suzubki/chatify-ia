@@ -38,7 +38,7 @@ export const coreConfig = {
 	tokens: {
 		duration: {
 			accessToken: {
-				seconds: 60 * 60 * 1, // 1 hour
+				seconds: (60 * 60 * 1) / 4, // 15 min
 				miliSeconds: 60 * 60 * 1000,
 			},
 			refreshToken: {

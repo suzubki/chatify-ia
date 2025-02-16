@@ -4,7 +4,15 @@ import {
 	loginUserSchema,
 } from "@/shared/user-validation.schema";
 import type { CreateUserDto } from "@/user/dtos/user.dto";
-import { Body, Controller, Post, Req, Res, UsePipes } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Get,
+	Post,
+	Req,
+	Res,
+	UsePipes,
+} from "@nestjs/common";
 import type { Request, Response } from "express";
 import { coreConfig } from "src/core/config/config";
 import { COOKIES } from "src/core/config/constants";
@@ -52,7 +60,7 @@ export class AuthController {
 		return { ...user };
 	}
 
-	@Post("/validate-session")
+	@Get("/validate-session")
 	async validateSession(@Req() req: Request, @Res() res: Response) {
 		const { refreshed, accessToken } = await this.authService.validateSession(
 			req.cookies.access_token,
